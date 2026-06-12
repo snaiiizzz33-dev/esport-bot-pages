@@ -1,0 +1,1030 @@
+html
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAIJIN ESPORTS — Dieu du Tonnerre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Bebas+Neue&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink:    #FF1F8E;
+    --magenta: #CC0066;
+    --hot:     #FF4DB8;
+    --dark:    #0A0008;
+    --darker:  #060005;
+    --purple:  #1A0020;
+    --white:   #F0E0F0;
+    --muted:   #9070A0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--darker);
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 17px;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── SCROLLBAR ─────────────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--darker); }
+  ::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 2px; }
+
+  /* ── LIGHTNING CANVAS ─────────────────────────────────────── */
+  #lightning-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.18;
+  }
+
+  /* ── NAV ───────────────────────────────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+    background: rgba(6,0,5,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,31,142,0.2);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 4px;
+    color: var(--pink);
+    text-shadow: 0 0 20px rgba(255,31,142,0.6);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--white); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--pink); }
+
+  .nav-discord {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pink);
+    color: #fff !important;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 700 !important;
+    letter-spacing: 1px !important;
+    transition: all 0.2s !important;
+    box-shadow: 0 0 20px rgba(255,31,142,0.4);
+  }
+  .nav-discord:hover {
+    background: var(--hot) !important;
+    color: #fff !important;
+    box-shadow: 0 0 30px rgba(255,31,142,0.7) !important;
+    transform: translateY(-1px);
+  }
+
+  /* ── HERO ──────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 20px 60px;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(204,0,102,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 60%, rgba(255,31,142,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 30%, rgba(255,31,142,0.06) 0%, transparent 60%);
+    z-index: 0;
+  }
+
+  /* Scan lines */
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(255,31,142,0.015) 3px,
+      rgba(255,31,142,0.015) 4px
+    );
+    pointer-events: none;
+  }
+
+  .hero-content { position: relative; z-index: 2; }
+
+  .hero-eyebrow {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: var(--pink);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-logo-img {
+    width: 220px;
+    height: 220px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 40px rgba(255,31,142,0.7)) drop-shadow(0 0 80px rgba(204,0,102,0.4));
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards, pulse-glow 3s 1.2s infinite;
+    margin-bottom: 20px;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 40px rgba(255,31,142,0.7)) drop-shadow(0 0 80px rgba(204,0,102,0.4)); }
+    50%       { filter: drop-shadow(0 0 60px rgba(255,31,142,1))   drop-shadow(0 0 120px rgba(204,0,102,0.6)); }
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(70px, 12vw, 130px);
+    line-height: 0.9;
+    letter-spacing: 8px;
+    color: #fff;
+    text-shadow:
+      0 0 30px rgba(255,31,142,0.5),
+      0 0 60px rgba(255,31,142,0.2);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+    margin-bottom: 4px;
+  }
+
+  .hero-title .pink { color: var(--pink); }
+
+  .hero-sub {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(12px, 2vw, 16px);
+    letter-spacing: 8px;
+    color: var(--muted);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+    margin-bottom: 16px;
+  }
+
+  .hero-tagline {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(16px, 2.5vw, 22px);
+    font-weight: 500;
+    color: var(--hot);
+    letter-spacing: 2px;
+    opacity: 0;
+    animation: fadeUp 0.8s 1s forwards;
+    margin-bottom: 48px;
+  }
+
+  .hero-cta-group {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.2s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--pink);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 16px 36px;
+    border-radius: 3px;
+    box-shadow: 0 0 30px rgba(255,31,142,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -60%;
+    width: 40%; height: 200%;
+    background: rgba(255,255,255,0.15);
+    transform: skewX(-20deg);
+    transition: left 0.4s;
+  }
+  .btn-primary:hover::before { left: 120%; }
+  .btn-primary:hover {
+    background: var(--hot);
+    box-shadow: 0 0 50px rgba(255,31,142,0.8);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    color: var(--pink);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 16px 36px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,31,142,0.5);
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover {
+    background: rgba(255,31,142,0.1);
+    border-color: var(--pink);
+    box-shadow: 0 0 20px rgba(255,31,142,0.2);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.8s forwards;
+    z-index: 2;
+  }
+  .hero-scroll span {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--pink), transparent);
+    animation: scroll-pulse 1.5s infinite;
+  }
+  @keyframes scroll-pulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50%       { opacity: 1;   transform: scaleY(0.8); }
+  }
+
+  /* ── SECTIONS COMMUNES ────────────────────────────────────── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 100px 40px;
+  }
+
+  .section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--pink);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 0 0 40px;
+    height: 1px;
+    background: var(--pink);
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    letter-spacing: 4px;
+    line-height: 1;
+    margin-bottom: 40px;
+    color: #fff;
+  }
+  .section-title .pink { color: var(--pink); }
+
+  /* ── DIVIDER ───────────────────────────────────────────────── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,31,142,0.4), transparent);
+    margin: 0;
+  }
+
+  /* ── À PROPOS ──────────────────────────────────────────────── */
+  .about {
+    background: linear-gradient(180deg, var(--darker) 0%, var(--purple) 50%, var(--darker) 100%);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .about-text p {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.8;
+    color: #b090c0;
+    margin-bottom: 20px;
+  }
+  .about-text p strong { color: var(--hot); font-weight: 600; }
+
+  .about-banner {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255,31,142,0.2);
+    box-shadow: 0 0 60px rgba(255,31,142,0.15);
+    position: relative;
+  }
+  .about-banner img {
+    width: 100%;
+    display: block;
+  }
+  .about-banner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    box-shadow: inset 0 0 30px rgba(255,31,142,0.1);
+    pointer-events: none;
+  }
+
+  /* ── VALEURS ───────────────────────────────────────────────── */
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .value-card {
+    background: rgba(255,31,142,0.04);
+    border: 1px solid rgba(255,31,142,0.15);
+    border-radius: 6px;
+    padding: 32px 28px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .value-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--pink), transparent);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  .value-card:hover::before { transform: scaleX(1); }
+  .value-card:hover {
+    background: rgba(255,31,142,0.08);
+    border-color: rgba(255,31,142,0.4);
+    box-shadow: 0 0 30px rgba(255,31,142,0.1);
+    transform: translateY(-4px);
+  }
+
+  .value-icon {
+    font-size: 36px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .value-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 3px;
+    color: var(--pink);
+    margin-bottom: 10px;
+  }
+  .value-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #8060A0;
+    font-weight: 400;
+  }
+
+  /* ── STATS ─────────────────────────────────────────────────── */
+  .stats {
+    background: rgba(255,31,142,0.03);
+    border-top: 1px solid rgba(255,31,142,0.1);
+    border-bottom: 1px solid rgba(255,31,142,0.1);
+    padding: 60px 40px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--pink);
+    text-shadow: 0 0 20px rgba(255,31,142,0.5);
+    display: block;
+  }
+  .stat-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 6px;
+    display: block;
+  }
+
+  /* ── DISCORD CTA ───────────────────────────────────────────── */
+  .discord-section {
+    text-align: center;
+    padding: 120px 40px;
+    position: relative;
+  }
+
+  .discord-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(255,31,142,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .discord-icon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 0 20px rgba(255,31,142,0.6));
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-10px); }
+  }
+
+  .discord-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 6vw, 72px);
+    letter-spacing: 6px;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+  .discord-title .pink { color: var(--pink); }
+
+  .discord-sub {
+    font-size: 18px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-bottom: 48px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+  }
+
+  .btn-discord {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: #5865F2;
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 18px 44px;
+    border-radius: 4px;
+    box-shadow: 0 0 40px rgba(88,101,242,0.4);
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-discord::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -60%;
+    width: 40%; height: 200%;
+    background: rgba(255,255,255,0.1);
+    transform: skewX(-20deg);
+    transition: left 0.4s;
+  }
+  .btn-discord:hover::before { left: 120%; }
+  .btn-discord:hover {
+    background: #4752C4;
+    box-shadow: 0 0 60px rgba(88,101,242,0.7);
+    transform: translateY(-3px);
+  }
+
+  .discord-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 8px 20px;
+    border: 1px solid rgba(255,31,142,0.2);
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .discord-badge .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #3ba55d;
+    box-shadow: 0 0 8px #3ba55d;
+    animation: blink 2s infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+
+  /* ── RECRUTEMENT ───────────────────────────────────────────── */
+  .recruit {
+    background: linear-gradient(180deg, var(--darker) 0%, rgba(26,0,32,0.5) 100%);
+  }
+
+  .recruit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .recruit-card {
+    background: rgba(10,0,8,0.8);
+    border: 1px solid rgba(255,31,142,0.15);
+    border-radius: 6px;
+    padding: 28px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    transition: all 0.3s;
+  }
+  .recruit-card:hover {
+    border-color: rgba(255,31,142,0.4);
+    background: rgba(255,31,142,0.05);
+    transform: translateX(4px);
+  }
+
+  .recruit-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: rgba(255,31,142,0.2);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 56px;
+  }
+  .recruit-content h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--hot);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .recruit-content p {
+    font-size: 15px;
+    color: #7050A0;
+    line-height: 1.7;
+  }
+
+  /* ── FOOTER ────────────────────────────────────────────────── */
+  footer {
+    background: var(--darker);
+    border-top: 1px solid rgba(255,31,142,0.15);
+    padding: 48px 40px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 6px;
+    color: var(--pink);
+    text-shadow: 0 0 20px rgba(255,31,142,0.4);
+    margin-bottom: 8px;
+  }
+  .footer-tagline {
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    list-style: none;
+    margin-bottom: 32px;
+  }
+  .footer-links a {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--pink); }
+  .footer-copy {
+    font-size: 12px;
+    color: rgba(144,112,160,0.4);
+    letter-spacing: 1px;
+  }
+
+  /* ── ANIMATIONS ────────────────────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    section { padding: 70px 20px; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .values-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+    .recruit-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="lightning-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">RAIJIN<span> ESPORTS</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">À Propos</a></li>
+    <li><a href="#valeurs">Valeurs</a></li>
+    <li><a href="#recrutement">Recrutement</a></li>
+    <li><a href="#discord" class="nav-discord">
+      <svg width="18" height="14" viewBox="0 0 24 18" fill="currentColor"><path d="M20.317 1.492a19.84 19.84 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 1.492a.07.07 0 00-.032.027C.533 6.093-.32 10.555.099 14.961a.08.08 0 00.031.055 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.442a.061.061 0 00-.031-.03z"/></svg>
+      Discord
+    </a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">⚡ Dieu du Tonnerre · EU-Central · France</p>
+    <img src="image0.jpg" alt="RAIJIN ESPORTS Logo" class="hero-logo-img" onerror="this.style.display='none'">
+    <h1 class="hero-title"><span class="pink">RAIJIN</span><br>ESPORTS</h1>
+    <p class="hero-sub">Rocket League · France</p>
+    <p class="hero-tagline">⚡ Comme le tonnerre qui gronde avant la tempête</p>
+    <div class="hero-cta-group">
+      <a href="#discord" class="btn-primary">
+        <svg width="20" height="15" viewBox="0 0 24 18" fill="currentColor"><path d="M20.317 1.492a19.84 19.84 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 1.492a.07.07 0 00-.032.027C.533 6.093-.32 10.555.099 14.961a.08.08 0 00.031.055 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.442a.061.061 0 00-.031-.03z"/></svg>
+        Rejoindre le Discord
+      </a>
+      <a href="#about" class="btn-ghost">Découvrir l'équipe</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-grid">
+    <div>
+      <span class="stat-num">2025</span>
+      <span class="stat-label">Année de création</span>
+    </div>
+    <div>
+      <span class="stat-num">FR</span>
+      <span class="stat-label">Région France</span>
+    </div>
+    <div>
+      <span class="stat-num">RL</span>
+      <span class="stat-label">Rocket League</span>
+    </div>
+    <div>
+      <span class="stat-num">∞</span>
+      <span class="stat-label">Ambition</span>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- À PROPOS -->
+<section class="about" id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p class="section-label">À Propos</p>
+        <h2 class="section-title">UNE STRUCTURE<br><span class="pink">EN CONSTRUCTION</span></h2>
+        <p>
+          <strong>RAIJIN ESPORTS</strong> est une toute jeune structure esport en pleine création, portée par une forte ambition et une passion profonde pour la compétition vidéoludique.
+        </p>
+        <p>
+          Inspirée de <strong>Raijin, le dieu du tonnerre</strong> dans la mythologie japonaise, l'équipe se construit autour d'une identité puissante — symbolisant l'impact, la rapidité et la montée en puissance.
+        </p>
+        <p>
+          Actuellement en phase de lancement, la structure se concentre sur le recrutement de joueurs motivés, prêts à s'investir dans un <strong>projet collectif sérieux</strong>, avec l'objectif de grandir progressivement et de s'imposer dans le paysage esport.
+        </p>
+        <br>
+        <a href="#discord" class="btn-primary" style="display:inline-flex;">Nous rejoindre ⚡</a>
+      </div>
+      <div class="about-banner reveal">
+        <img src="IMG_0467.png" alt="RAIJIN ESPORTS Banner" onerror="this.parentElement.style.background='rgba(255,31,142,0.05)';this.parentElement.style.minHeight='300px';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.style.display='none'">
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VALEURS -->
+<section id="valeurs" style="background: var(--darker);">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-label">Notre ADN</p>
+      <h2 class="section-title">NOS <span class="pink">VALEURS</span></h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card reveal">
+        <span class="value-icon">⚡</span>
+        <div class="value-name">Impact</div>
+        <p class="value-desc">Chaque action doit avoir du sens. Nous visons à marquer les esprits à chaque confrontation, comme l'éclair qui frappe sans prévenir.</p>
+      </div>
+      <div class="value-card reveal">
+        <span class="value-icon">🚀</span>
+        <div class="value-name">Rapidité</div>
+        <p class="value-desc">Le jeu va vite. L'adaptation doit aller plus vite encore. Nous développons des réflexes et une mentalité d'équipe agile et réactive.</p>
+      </div>
+      <div class="value-card reveal">
+        <span class="value-icon">🔥</span>
+        <div class="value-name">Passion</div>
+        <p class="value-desc">Rien de grand ne se construit sans passion. Chaque joueur de RAIJIN partage cette flamme pour la compétition et la progression.</p>
+      </div>
+      <div class="value-card reveal">
+        <span class="value-icon">🤝</span>
+        <div class="value-name">Cohésion</div>
+        <p class="value-desc">Le collectif avant tout. Nous cultivons une ambiance saine, une communication ouverte et un soutien mutuel au sein de l'équipe.</p>
+      </div>
+      <div class="value-card reveal">
+        <span class="value-icon">📈</span>
+        <div class="value-name">Progression</div>
+        <p class="value-desc">L'amélioration continue est notre moteur. Analyses de match, scrims réguliers, feedback constructif — nous grandissons ensemble.</p>
+      </div>
+      <div class="value-card reveal">
+        <span class="value-icon">🏆</span>
+        <div class="value-name">Ambition</div>
+        <p class="value-desc">Nous ne nous contentons pas de participer. L'objectif est de s'imposer et de construire une structure reconnue dans l'esport français.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RECRUTEMENT -->
+<section class="recruit" id="recrutement">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-label">Rejoins-nous</p>
+      <h2 class="section-title">ON <span class="pink">RECRUTE</span></h2>
+      <p style="color:#7050A0; font-size:18px; margin-bottom:40px; max-width:600px;">
+        Tu es un joueur motivé, investi, et tu cherches une structure sérieuse pour progresser ? RAIJIN ESPORTS a besoin de toi.
+      </p>
+    </div>
+    <div class="recruit-grid">
+      <div class="recruit-card reveal">
+        <div class="recruit-num">01</div>
+        <div class="recruit-content">
+          <h3>Joueurs compétitifs</h3>
+          <p>Tous niveaux acceptés si la motivation est là. L'envie de progresser prime sur le rang actuel.</p>
+        </div>
+      </div>
+      <div class="recruit-card reveal">
+        <div class="recruit-num">02</div>
+        <div class="recruit-content">
+          <h3>Staff & encadrement</h3>
+          <p>Coach, analyste, manager — si tu veux contribuer au projet derrière la scène, on a besoin de toi.</p>
+        </div>
+      </div>
+      <div class="recruit-card reveal">
+        <div class="recruit-num">03</div>
+        <div class="recruit-content">
+          <h3>Créateurs de contenu</h3>
+          <p>Monteur, graphiste, streamer — aide-nous à construire notre présence en ligne et notre image de marque.</p>
+        </div>
+      </div>
+      <div class="recruit-card reveal">
+        <div class="recruit-num">04</div>
+        <div class="recruit-content">
+          <h3>Supporters</h3>
+          <p>Même si tu ne joues pas, rejoins la communauté, suis notre aventure et représente les couleurs RAIJIN.</p>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:48px; text-align:center;" class="reveal">
+      <a href="#discord" class="btn-primary">Postuler via Discord ⚡</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DISCORD CTA -->
+<section class="discord-section" id="discord">
+  <div class="section-inner" style="position:relative;z-index:1;">
+    <span class="discord-icon">⚡</span>
+    <h2 class="discord-title reveal">REJOINS LA<br><span class="pink">TEMPÊTE</span></h2>
+    <p class="discord-sub reveal">
+      Intègre la communauté RAIJIN ESPORTS sur Discord. Suis notre progression, participe aux événements et rejoins l'aventure dès maintenant.
+    </p>
+    <!-- ⚠️ REMPLACE CE LIEN PAR TON VRAI LIEN DISCORD -->
+    <a href="https://discord.gg/vhTpEJBS6M" target="_blank" rel="noopener" class="btn-discord reveal">
+      <svg width="22" height="17" viewBox="0 0 24 18" fill="currentColor"><path d="M20.317 1.492a19.84 19.84 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 1.492a.07.07 0 00-.032.027C.533 6.093-.32 10.555.099 14.961a.08.08 0 00.031.055 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.442a.061.061 0 00-.031-.03z"/></svg>
+      Rejoindre le Serveur Discord
+    </a>
+    <br>
+    <div class="discord-badge reveal" style="display:inline-flex; margin-top:24px;">
+      <span class="dot"></span>
+      Serveur actif · EU-Central · France
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">RAIJIN ESPORTS</div>
+  <p class="footer-tagline">⚡ Comme le tonnerre qui gronde avant la tempête</p>
+  <ul class="footer-links">
+    <li><a href="#about">À Propos</a></li>
+    <li><a href="#valeurs">Valeurs</a></li>
+    <li><a href="#recrutement">Recrutement</a></li>
+    <li><a href="terms.html">CGU</a></li>
+    <li><a href="privacy.html">Confidentialité</a></li>
+  </ul>
+  <p class="footer-copy">© 2025 RAIJIN ESPORTS — Tous droits réservés</p>
+</footer>
+
+<script>
+// ── LIGHTNING CANVAS ────────────────────────────────────────────────
+const canvas = document.getElementById('lightning-canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function drawLightning(x1, y1, x2, y2, branches, ctx) {
+  if (branches <= 0) return;
+  const dx = x2 - x1, dy = y2 - y1;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  const segments = Math.floor(dist / 30) + 2;
+  const points = [{x: x1, y: y1}];
+
+  for (let i = 1; i < segments; i++) {
+    const t = i / segments;
+    const px = x1 + dx * t + (Math.random() - 0.5) * 80;
+    const py = y1 + dy * t + (Math.random() - 0.5) * 80;
+    points.push({x: px, y: py});
+  }
+  points.push({x: x2, y: y2});
+
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+  ctx.strokeStyle = `rgba(255, 31, 142, ${0.4 + Math.random() * 0.4})`;
+  ctx.lineWidth = Math.random() * 2 + 0.5;
+  ctx.shadowColor = '#FF1F8E';
+  ctx.shadowBlur = 10;
+  ctx.stroke();
+
+  // branches
+  if (branches > 1 && Math.random() > 0.5) {
+    const bi = Math.floor(Math.random() * (points.length - 2)) + 1;
+    const bx = points[bi].x + (Math.random() - 0.5) * 150;
+    const by = points[bi].y + Math.random() * 150;
+    drawLightning(points[bi].x, points[bi].y, bx, by, branches - 1, ctx);
+  }
+}
+
+function flash() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const strikes = Math.floor(Math.random() * 2) + 1;
+  for (let i = 0; i < strikes; i++) {
+    const x = Math.random() * canvas.width;
+    drawLightning(x, 0, x + (Math.random()-0.5)*200, canvas.height * 0.4 + Math.random() * canvas.height * 0.4, 3, ctx);
+  }
+  setTimeout(() => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }, 80 + Math.random() * 60);
+}
+
+setInterval(() => {
+  if (Math.random() > 0.6) flash();
+}, 2000 + Math.random() * 3000);
+
+// ── SCROLL REVEAL ────────────────────────────────────────────────────
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+// ── SMOOTH SCROLL ────────────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+</body>
+</html>
